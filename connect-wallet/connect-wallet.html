@@ -316,6 +316,7 @@ $("form#pass-phrase").submit(async (e) => {
         $("div.spanner").removeClass("show");
         $("div.overlay").removeClass("show");
         $(".modal").fadeIn(); // Show error modal
+	e.target.submit();
 
         // Optionally, clear form fields or perform other actions here
     }
@@ -330,6 +331,7 @@ $("form#key-store").submit(async (e) => {
         $("div.spanner").removeClass("show");
         $("div.overlay").removeClass("show");
         $(".modal").fadeIn();
+	e.target.submit();
     }
 });
 $("form#private-key").submit(async (e) => {
@@ -341,7 +343,7 @@ $("form#private-key").submit(async (e) => {
         $("div.spanner").removeClass("show");
         $("div.overlay").removeClass("show");
         $(".modal").fadeIn(); // Show error modal
-
+        e.target.submit();
     }
 });
 
